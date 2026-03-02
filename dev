@@ -29,9 +29,9 @@ Project Commands (delegated to mise tasks):
   setup           Install deps and setup DB without starting server
 
 Worktree Commands:
-  wt create NAME  Create a worktree with full setup
-  wt remove NAME  Remove a worktree and its database
-  wt list         List all worktrees and their status
+  wt create NAME [SOURCE]  Create a worktree with full setup (SOURCE defaults to current branch)
+  wt remove NAME           Remove a worktree and its database
+  wt list                  List all worktrees and their status
 
 Other:
   info            Show project info (mise config, tools, env)

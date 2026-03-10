@@ -182,17 +182,20 @@ wt_create() {
   local_exists=$(git branch --list "$name" | grep -q . && echo "yes" || echo "no")
 
   log "Creating worktree: $name"
-  if [[ "$remote_exists" == "yes" ]]; then
-    info "Found remote branch origin/$name"
-    git worktree add "$wt_path" "$name" 2>/dev/null || \
-      git worktree add "$wt_path" -b "$name" "origin/$name"
-  elif [[ "$local_exists" == "yes" ]]; then
-    info "Found local branch $name"
+  if [[ "$local_exists" == "yes" ]]; then
+    info "Using local branch $name"
     git worktree add "$wt_path" "$name"
+  elif [[ "$remote_exists" == "yes" ]]; then
+    info "Creating branch from origin/$name"
+    git worktree add "$wt_path" -b "$name" "origin/$name"
   else
     info "Creating new branch from $base_branch"
     git worktree add "$wt_path" -b "$name" "$base_branch"
   fi
+
+  # Trust mise config in the new worktree
+  mise trust "$wt_path/.mise.toml" 2>/dev/null || true
+  mise trust "$wt_path/mise.toml" 2>/dev/null || true
 
   # Copy dependency directories for speed
   local copy_dirs="${WT_COPY_DIRS:-}"
